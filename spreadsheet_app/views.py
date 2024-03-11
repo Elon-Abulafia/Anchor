@@ -35,6 +35,8 @@ def set_cell():
         set_cell_value(sheet_id, column_name, cell_index, value)
     except TypeError as e:
         response = (f"Invalid value for specified cell: {e}", 400)
+    except LookupError as e:
+        response = (f"Invalid lookup expression: {e}", 400)
     else:
         response = (f"Cell value set successfully", 200)
 
