@@ -41,3 +41,63 @@ def validate_new_value_type(sheet_id, column_name, value):
                     return False
 
                 return True
+
+
+def validate_lookup_loop(sheet_id, spreadsheet, column_name, cell_index, lookup_expression):
+    def fix_type(col_name, final_expression):
+        with open(f"{os.path.join(CONFIG_DIR, sheet_id)}.json", 'r') as f:
+            config_schema = json.load(f)
+
+            for col in config_schema["columns"]:
+                if col["name"] == col_name:
+                    try:
+                        return_value = TypeTranslator[col["type"]].value(final_expression)
+                    except ValueError:
+                        try:
+                            return_value = TypeTranslator[col["type"]].value(float(final_expression))
+                        except ValueError:
+                            return_value = final_expression
+
+                    return return_value
+
+    visited_nodes = {(column_name, cell_index): None}
+
+    while isinstance(lookup_expression, str) and "lookup" in lookup_expression:
+        extracted_parts = lookup_expression.replace("lookup(", "").rstrip(")").split(",")
+        extracted_col, extracted_index = extracted_parts[0], int(extracted_parts[1])
+
+        if (extracted_col, extracted_index) in visited_nodes:
+            return False
+
+        lookup_expression = spreadsheet.at[extracted_index, extracted_col]
+        visited_nodes[extracted_col, extracted_index] = None
+
+    lookup_expression = fix_type(extracted_col, lookup_expression)
+
+    return validate_new_value_type(sheet_id, column_name, lookup_expression)
+
+
+def evaluate_lookup(spreadsheet, lookup_expression):
+    while isinstance(lookup_expression, str) and "lookup" in lookup_expression:
+        extracted_parts = lookup_expression.replace("lookup(", "").rstrip(")").split(",")
+        extracted_col, extracted_index = extracted_parts[0], int(extracted_parts[1])
+
+        lookup_expression = spreadsheet.at[extracted_index, extracted_col]
+
+    return lookup_expression
+
+
+def get_type_dictionary(sheet_id):
+    """This function is mainly used in order to allow multiple data types in a single column when using pandas.
+    It is necessary in order to not change the int values being inserted into float64 (because this is the default
+    behaviour of a pandas dataframe).
+    """
+
+    dtype_dict = {}
+
+    with open(f"{os.path.join(CONFIG_DIR, sheet_id)}.json", 'r') as f:
+        config_schema = json.load(f)
+        for col in config_schema['columns']:
+            dtype_dict[col["name"]] = object
+
+    return dtype_dict
