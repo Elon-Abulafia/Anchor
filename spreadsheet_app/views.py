@@ -1,4 +1,4 @@
-from spreadsheet_app.spreadsheet import create_new_sheet, set_cell_value
+from spreadsheet_app.spreadsheet import create_new_sheet, set_cell_value, get_spreadsheet_values
 from spreadsheet_app import app
 from flask import request, jsonify
 
@@ -37,5 +37,15 @@ def set_cell():
         response = (f"Invalid value for specified cell: {e}", 400)
     else:
         response = (f"Cell value set successfully", 200)
+
+    return response
+
+
+@app.route("/sheet/<sheet_id>", methods=["GET"])
+def get_spreadsheet(sheet_id):
+    try:
+        response = (get_spreadsheet_values(sheet_id), 200)
+    except ValueError as e:
+        response = (f"Invalid sheet ID: {e}", 400)
 
     return response

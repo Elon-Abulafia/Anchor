@@ -35,7 +35,17 @@ def set_cell_value(sheet_id, column_name, cell_index, value):
         spreadsheet = pd.read_csv(sheet_path, index_col=0)
         spreadsheet.at[cell_index, column_name] = value
 
-        print(spreadsheet)
         spreadsheet.to_csv(sheet_path)
     else:
         raise TypeError("Cell value type must match column type")
+
+
+def get_spreadsheet_values(sheet_id):
+    sheet_path = f"{os.path.join(SHEETS_DIR, sheet_id)}.csv"
+
+    try:
+        spreadsheet = pd.read_csv(sheet_path, index_col=0)
+    except FileNotFoundError as e:
+        raise e
+
+    return {str((col, index)): value for (index, col), value in spreadsheet.stack().items()}
