@@ -1,6 +1,6 @@
 from spreadsheet_app.spreadsheet import create_new_sheet, set_cell_value, get_spreadsheet_values
 from spreadsheet_app import app
-from flask import request, jsonify
+from flask import request
 
 
 @app.route('/sheet', methods=["POST"])
