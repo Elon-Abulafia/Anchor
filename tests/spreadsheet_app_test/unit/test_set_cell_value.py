@@ -1,7 +1,7 @@
 import unittest
 from spreadsheet_app.spreadsheet import set_cell_value
 from tests.consts import VALID_VALUES, COLUMN_NAMES
-from tests.spreadsheet_app.test_create_new_sheet import fixed_uuid
+from tests.spreadsheet_app_test.unit.test_create_new_sheet import fixed_uuid
 
 
 class SetCellValueTest(unittest.TestCase):
