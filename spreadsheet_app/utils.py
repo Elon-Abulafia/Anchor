@@ -7,8 +7,8 @@ def check_schema_integrity(json_schema):
     error_message = None
     schema_is_valid = True
 
-    if "columns" not in json_schema or not isinstance(json_schema["columns"], list):
-        error_message = "Missing 'columns' field"
+    if "columns" not in json_schema or not isinstance(json_schema["columns"], list) or len(json_schema["columns"]) == 0:
+        error_message = "Missing 'columns' field or it is empty"
         schema_is_valid = False
     else:
         for col in json_schema["columns"]:
