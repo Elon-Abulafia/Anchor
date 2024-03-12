@@ -3,11 +3,6 @@ from spreadsheet_app import app
 from flask import request, jsonify
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
 @app.route('/sheet', methods=["POST"])
 def create_sheet():
     new_sheet_json = request.get_json()
@@ -17,7 +12,7 @@ def create_sheet():
     except ValueError as e:
         response = (f"Invalid json schema: {e}", 400)
     else:
-        response = (sheet_id, 200)
+        response = (sheet_id, 201)
 
     return response
 
