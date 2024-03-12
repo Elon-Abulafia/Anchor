@@ -1,0 +1,4 @@
+,BOOLEAN,INT,DOUBLE,STRING
+0,True,1.0,1.0,string
+1,"lookup(BOOLEAN, 0)",,,
+2,"lookup(BOOLEAN, 1)",,,
