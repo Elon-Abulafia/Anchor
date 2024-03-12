@@ -3,7 +3,7 @@ import uuid
 import json
 import pandas as pd
 from spreadsheet_app.utils import check_schema_integrity, validate_new_value_type, validate_lookup_loop, \
-    evaluate_lookup, get_type_dictionary
+    evaluate_lookup
 from spreadsheet_app.consts import CONFIG_DIR, SHEETS_DIR, TypeTranslator
 
 
